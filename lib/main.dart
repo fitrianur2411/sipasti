@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           secondary: Colors.white,
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: GoogleFonts.poppinsTextTheme().apply(
+        textTheme: GoogleFonts.poppinsTextTheme().apply( 
           bodyColor: Colors.black87,
           displayColor: Colors.black87,
         ),
