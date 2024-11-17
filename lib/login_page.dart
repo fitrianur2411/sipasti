@@ -10,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _nipController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   String _errorMessage = '';
@@ -24,18 +24,18 @@ class _LoginPageState extends State<LoginPage> {
 
     await Future.delayed(const Duration(seconds: 1));
 
-    if (_nipController.text == '12345678' &&
-        _passwordController.text == 'dosen') {
+    if (_usernameController.text == 'Dosen42' &&
+        _passwordController.text == '12345678') {
       // Navigasi ke halaman HomePage jika login berhasil
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(username: _nipController.text),
+          builder: (context) => HomePage(username: _usernameController.text),
         ),
       );
     } else {
       setState(() {
-        _errorMessage = 'NIP atau Password salah';
+        _errorMessage = 'Username atau Password salah';
         _isLoading = false;
       });
     }
@@ -101,10 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 20),
                         TextField(
-                          controller: _nipController,
+                          controller: _usernameController,
                           decoration: InputDecoration(
-                            labelText: 'NIP',
-                            hintText: 'Masukkan NIP',
+                            labelText: 'Username',
+                            hintText: 'Masukkan Username',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
