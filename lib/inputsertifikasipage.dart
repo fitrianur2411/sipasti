@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';  // Import the file_picker package
 
 class inputsertifikasipage extends StatefulWidget {
   @override
@@ -6,6 +7,8 @@ class inputsertifikasipage extends StatefulWidget {
 }
 
 class _InputSertifikasiPageState extends State<inputsertifikasipage> {
+  String? _fileName;  // To store the name of the uploaded file
+
   // Method to show success dialog
   void _showSuccessDialog() {
     showDialog(
@@ -43,6 +46,24 @@ class _InputSertifikasiPageState extends State<inputsertifikasipage> {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pop(); // Close the dialog
     });
+  }
+
+  // Method to pick a file for upload
+  Future<void> _pickFile() async {
+    // Pick a file using FilePicker
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        // Update the file name when a file is picked
+        _fileName = result.files.single.name;
+      });
+    } else {
+      // Handle case when no file is picked
+      setState(() {
+        _fileName = null;
+      });
+    }
   }
 
   @override
@@ -99,9 +120,7 @@ class _InputSertifikasiPageState extends State<inputsertifikasipage> {
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // Handle file upload here
-                    },
+                    onPressed: _pickFile,  // Use the file picker method when pressed
                     icon: const Icon(Icons.upload_file),
                     label: const Text('Unggah Dokumen'),
                     style: ElevatedButton.styleFrom(
@@ -112,6 +131,17 @@ class _InputSertifikasiPageState extends State<inputsertifikasipage> {
                       ),
                     ),
                   ),
+                  if (_fileName != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      'Dokumen Terpilih: $_fileName',  // Display selected file name
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 6, 90, 151),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
