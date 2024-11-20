@@ -1,4 +1,3 @@
-// lib/login_page.dart
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 
@@ -16,6 +15,9 @@ class _LoginPageState extends State<LoginPage> {
   String _errorMessage = '';
   bool _isLoading = false;
 
+  // Tambahkan variabel untuk tipe pengguna
+  String _userRole = 'Dosen'; // Defaultnya adalah "Dosen"
+
   void _login() async {
     setState(() {
       _isLoading = true;
@@ -24,9 +26,18 @@ class _LoginPageState extends State<LoginPage> {
 
     await Future.delayed(const Duration(seconds: 1));
 
-    if (_usernameController.text == 'Dosen42' &&
+    if (_userRole == 'Dosen' &&
+        _usernameController.text == 'Dosen42' &&
         _passwordController.text == '12345678') {
-      // Navigasi ke halaman HomePage jika login berhasil
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(username: _usernameController.text),
+        ),
+      );
+    } else if (_userRole == 'Pimpinan' &&
+        _usernameController.text == 'Pimpinan99' &&
+        _passwordController.text == '87654321') {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -67,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                
+
                 // Kotak Login dengan Border Biru
                 Container(
                   decoration: BoxDecoration(
@@ -100,6 +111,39 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
+
+                        // Radio Button untuk memilih peran
+                        Row(
+                          children: [
+                            Expanded(
+                              child: RadioListTile<String>(
+                                title: const Text('Dosen'),
+                                value: 'Dosen',
+                                groupValue: _userRole,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _userRole = value!;
+                                  });
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              child: RadioListTile<String>(
+                                title: const Text('Pimpinan'),
+                                value: 'Pimpinan',
+                                groupValue: _userRole,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _userRole = value!;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 20),
+
                         TextField(
                           controller: _usernameController,
                           decoration: InputDecoration(
@@ -181,4 +225,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
