@@ -85,7 +85,7 @@ class _InputSertifikasiPageState extends State<inputsertifikasipage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Input Sertifikasi',
+              'Upload Sertifikasi',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
