@@ -15,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   String _errorMessage = '';
   bool _isLoading = false;
 
-  // Tambahkan variabel untuk tipe pengguna
+  // Variabel untuk tipe pengguna
   String _userRole = 'Dosen'; // Defaultnya adalah "Dosen"
 
   void _login() async {
@@ -114,10 +114,16 @@ class _LoginPageState extends State<LoginPage> {
 
                         // Radio Button untuk memilih peran
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Expanded(
                               child: RadioListTile<String>(
-                                title: const Text('Dosen'),
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                                title: const Text(
+                                  'Dosen',
+                                  style: TextStyle(fontSize: 14),
+                                ),
                                 value: 'Dosen',
                                 groupValue: _userRole,
                                 onChanged: (value) {
@@ -129,7 +135,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             Expanded(
                               child: RadioListTile<String>(
-                                title: const Text('Pimpinan'),
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                                title: const Text(
+                                  'Pimpinan',
+                                  style: TextStyle(fontSize: 14),
+                                ),
                                 value: 'Pimpinan',
                                 groupValue: _userRole,
                                 onChanged: (value) {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'PelatihanListPage.dart';
 import 'SertifikasiListPage.dart';
-import 'PendataanPage.dart'; // Import halaman PendataanPage
+import 'PendataanPage.dart';
 import 'ProfilePage.dart';
-import 'Notification_Page.dart';
+import 'notification_page.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -15,9 +15,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // Current index untuk navigasi
 
-  // Fungsi untuk menangani navigasi saat item ditekan
+  // Fungsi untuk navigasi BottomNavigationBar
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -26,18 +26,41 @@ class _HomePageState extends State<HomePage> {
     if (index == 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PendataanPage()),
+        MaterialPageRoute(
+          builder: (context) => PendataanPage(
+            onBackToHome: () {
+              setState(() {
+                _selectedIndex = 0; // Kembali ke Home
+              });
+            },
+          ),
+        ),
       );
-    }
-    // Inside _onItemTapped
-    if (index == 3) {
+    } else if (index == 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProfilePage()),
+        MaterialPageRoute(
+          builder: (context) => NotificationPage(
+            onBackToHome: () {
+               setState(() {
+                _selectedIndex = 0; // Kembali ke ikon Home
+                });
+            },
+          ),
+        ),
+      );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfilePage(
+          onBackToHome: () {
+            setState(() {
+              _selectedIndex = 0; // Kembali ke Home
+            });
+          },
+        )),
       );
     }
-
-    // Tambahkan navigasi logika untuk item lainnya jika diperlukan
   }
 
   @override
@@ -52,151 +75,143 @@ class _HomePageState extends State<HomePage> {
         ),
         elevation: 0,
         backgroundColor: const Color.fromARGB(255, 6, 90, 151),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const NotificationPage()),
-              );
-            },
-          ),
-        ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFF3F4F6), // Light grey background
-        ),
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            const Text(
-              'SIPaSTI',
-              style: TextStyle(
-                  fontSize: 22,
-                  color: Color.fromARGB(255, 18, 78, 120),
-                  fontWeight: FontWeight.bold),
-            ),
-            const Text(
-              'Sistem Informasi Pelatihan & Sertifikasi Jurusan Teknologi Informasi',
-              style: TextStyle(fontSize: 14, color: Color(0xFF4D4D4D)),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Rekomendasi Pelatihan & Sertifikasi',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 18, 78, 120),
+      body: _selectedIndex == 0
+          ? Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF3F4F6), // Light grey background
               ),
-            ),
-            const SizedBox(height: 10),
-            buildRecommendationCard(context),
+              child: ListView(
+                padding: const EdgeInsets.all(20),
+                children: [
+                  const Text(
+                    'SIPaSTI',
+                    style: TextStyle(
+                        fontSize: 22,
+                        color: Color.fromARGB(255, 18, 78, 120),
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const Text(
+                    'Sistem Informasi Pelatihan & Sertifikasi Jurusan Teknologi Informasi',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF4D4D4D)),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Rekomendasi Pelatihan & Sertifikasi',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 18, 78, 120),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  buildRecommendationCard(context),
 
-            // Pelatihan Section
-            const SizedBox(height: 20),
-            const Text(
-              'Pelatihan',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 18, 78, 120),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: buildTrainingCard(
-                    title: 'Pelatihan Digitalis Data',
-                    subtitle: 'UNS',
-                    image: 'assets/pelatihan_1.png',
+                  // Pelatihan Section
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Pelatihan',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 18, 78, 120),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: buildTrainingCard(
-                    title: 'Data Analyst with Excel',
-                    subtitle: 'DoLap',
-                    image: 'assets/pelatihan_2.jpg',
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: buildTrainingCard(
+                          title: 'Pelatihan Digitalis Data',
+                          subtitle: 'UNS',
+                          image: 'assets/pelatihan_1.png',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: buildTrainingCard(
+                          title: 'Data Analyst with Excel',
+                          subtitle: 'DoLap',
+                          image: 'assets/pelatihan_2.jpg',
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PelatihanListPage()),
-                  );
-                },
-                child: const Text(
-                  'Lebih Banyak',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PelatihanListPage()),
+                        );
+                      },
+                      child: const Text(
+                        'Lebih Banyak',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
 
-            // Sertifikasi Section
-            const SizedBox(height: 20),
-            const Text(
-              'Sertifikasi',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 18, 78, 120),
+                  // Sertifikasi Section
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Sertifikasi',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 18, 78, 120),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: buildCertificationCard(
+                          title: 'WEB Development',
+                          subtitle: 'BNSP',
+                          image: 'assets/Sertifikasi_1.jpg',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: buildCertificationCard(
+                          title: 'Software Engineer',
+                          subtitle: 'Jagoan Hosting',
+                          image: 'assets/Sertifikasi_2.png',
+                        ),
+                      ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const sertifikasilistpage()),
+                        );
+                      },
+                      child: const Text(
+                        'Lebih Banyak',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            )
+          : const Center(
+              child: Text('Other Page Content'),
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: buildCertificationCard(
-                    title: 'WEB Development',
-                    subtitle: 'BNSP',
-                    image: 'assets/Sertifikasi_1.jpg',
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: buildCertificationCard(
-                    title: 'Software Engineer',
-                    subtitle: 'Jagoan Hosting',
-                    image: 'assets/Sertifikasi_2.png',
-                  ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const sertifikasilistpage()),
-                  );
-                },
-                child: const Text(
-                  'Lebih Banyak',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
@@ -204,19 +219,19 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: '',
+            label: '', // Home
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: '',
+            icon: Icon(Icons.insert_drive_file),
+            label: '', // Pendataan
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.mail),
-            label: '',
+            icon: Icon(Icons.notifications),
+            label: '', // Notifikasi
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: '',
+            label: '', // Profil
           ),
         ],
       ),
@@ -317,7 +332,7 @@ class _HomePageState extends State<HomePage> {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
+        child: Column( 
           children: [
             Image.asset(image,
                 height: 80, width: double.infinity, fit: BoxFit.cover),
