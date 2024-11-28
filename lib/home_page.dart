@@ -4,6 +4,7 @@ import 'SertifikasiListPage.dart';
 import 'PendataanPage.dart';
 import 'ProfilePage.dart';
 import 'notification_page.dart';
+import 'rekomendasidetalpage.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -42,9 +43,9 @@ class _HomePageState extends State<HomePage> {
         MaterialPageRoute(
           builder: (context) => NotificationPage(
             onBackToHome: () {
-               setState(() {
+              setState(() {
                 _selectedIndex = 0; // Kembali ke ikon Home
-                });
+              });
             },
           ),
         ),
@@ -52,13 +53,15 @@ class _HomePageState extends State<HomePage> {
     } else if (index == 3) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProfilePage(
-          onBackToHome: () {
-            setState(() {
-              _selectedIndex = 0; // Kembali ke Home
-            });
-          },
-        )),
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(
+            onBackToHome: () {
+              setState(() {
+                _selectedIndex = 0; // Kembali ke Home
+              });
+            },
+          ),
+        ),
       );
     }
   }
@@ -194,7 +197,8 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const sertifikasilistpage()),
+                              builder: (context) =>
+                                  const sertifikasilistpage()),
                         );
                       },
                       child: const Text(
@@ -271,7 +275,12 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () {
-                        // Add navigation logic here if needed
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const Rekomendasidetailpage()),
+                        );
                       },
                       child: const Text(
                         'Lihat selengkapnya',
@@ -332,7 +341,7 @@ class _HomePageState extends State<HomePage> {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column( 
+        child: Column(
           children: [
             Image.asset(image,
                 height: 80, width: double.infinity, fit: BoxFit.cover),
