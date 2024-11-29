@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'home_page.dart'; // Import HomePage untuk Dosen
+import 'Pimpinan/homepagepimpinan.dart'; // Import HomePagePimpinan untuk Pimpinan
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(username: _usernameController.text),
+          builder: (context) => HomePagePimpinan(username: _usernameController.text),
         ),
       );
     } else {
@@ -65,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/logo_JTIpolinema.png',
+                  'assets/logo_JTIpolinema.png', // Pastikan file gambar logo sudah ada di folder assets
                   height: 100,
                 ),
                 const SizedBox(height: 20),
