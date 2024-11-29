@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sipasti/Pimpinan/SertifikasiListPage.dart';
 import 'PelatihanListPage.dart';
 import 'SertifikasiListPage.dart';
 import 'PendataanPage.dart';
@@ -198,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const sertifikasilistpage()),
+                                  const SertifikasiListPage()),
                         );
                       },
                       child: const Text(

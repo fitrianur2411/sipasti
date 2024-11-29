@@ -3,13 +3,17 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
+  final VoidCallback onBackToHome;
+
+  const ProfilePage({super.key, required this.onBackToHome});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _nipController = TextEditingController(text: "199205142023052008");
-  final TextEditingController _usernameController = TextEditingController(text: "FitriaNur42");
+  final TextEditingController _usernameController = TextEditingController(text: "Dosen42");
   final TextEditingController _nameController = TextEditingController(text: "Fitria Nur Sholikah, S.Tr S.I.B, M.T");
   final TextEditingController _addressController = TextEditingController(text: "Jl. Semanggi Barat No 23B");
   final TextEditingController _emailController = TextEditingController(text: "FitNur123@gmail.com");
@@ -31,6 +35,42 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // Function to show success dialog
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog tidak bisa ditutup dengan klik di luar
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.check_circle, size: 64, color: Color(0xFF065A97)),
+              const SizedBox(height: 10),
+              const Text(
+                "Berhasil Update",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF065A97)),
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF065A97),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Menutup dialog
+                },
+                child: const Text("OK"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
+            widget.onBackToHome();
             Navigator.pop(context);
           },
         ),
@@ -110,7 +151,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                 ),
                 onPressed: () {
-                  // Handle submit action
+                  // Panggil dialog sukses
+                  _showSuccessDialog();
                 },
                 child: const Text("Submit"),
               ),
@@ -131,12 +173,38 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       child: Column(
         children: [
-          buildTextField("NIP", _nipController),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "NIP",
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 5),
+                TextField(
+                  controller: _nipController,
+                  readOnly: true, // Membuat NIP hanya dapat dibaca
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color.fromARGB(255, 204, 221, 230)),
+                    ),
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 235, 240, 245),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+          ),
           buildTextField("Username", _usernameController),
           buildTextField("Nama", _nameController),
-          buildTextField("Alamat", _addressController),
           buildTextField("Email", _emailController),
           buildTextField("No.Telp/HP", _phoneController),
+          buildTextField("Alamat", _addressController),
         ],
       ),
     );
