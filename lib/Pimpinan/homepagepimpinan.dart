@@ -165,19 +165,19 @@ class _HomePagePimpinanState extends State<HomePagePimpinan> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Beranda',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
-            label: 'Statistik',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            label: 'Notifikasi',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profil',
+            label: '',
           ),
         ],
       ),
