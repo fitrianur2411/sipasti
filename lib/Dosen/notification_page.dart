@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'pendataanpage.dart';
+import 'Profil.dart';
 
 class NotificationPage extends StatefulWidget {
-  final VoidCallback onBackToHome; // Callback untuk kembali ke HomePage
+  final VoidCallback onBackToHome;
 
   const NotificationPage({Key? key, required this.onBackToHome})
       : super(key: key);
@@ -18,24 +20,33 @@ class _NotificationPageState extends State<NotificationPage> {
     setState(() {
       _selectedIndex = index;
 
-      // Navigasi antar halaman berdasarkan indeks
       switch (index) {
         case 0:
           widget.onBackToHome(); // Kembali ke Home
-          Navigator.pop(context); // Tutup halaman notifikasi
+          Navigator.pop(context); // Tutup halaman Notifikasi
           break;
         case 1:
-          // Tambahkan navigasi ke halaman Dokumen jika ada
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Navigasi ke halaman Dokumen belum tersedia")));
+          // Navigasi ke halaman Pendataan
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  PendataanPage(onBackToHome: widget.onBackToHome),
+            ),
+          );
           break;
         case 2:
-          // Halaman Notifikasi saat ini
+          // Tetap di halaman Notifikasi
           break;
         case 3:
-          // Tambahkan navigasi ke halaman Profil jika ada
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Navigasi ke halaman Profil belum tersedia")));
+          // Navigasi ke halaman Profil
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  Profil(), // Navigate to Profil page
+            ),
+          );
           break;
       }
     });
@@ -45,21 +56,15 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        widget.onBackToHome(); // Kembali ke halaman Home
-        Navigator.pop(context); // Tutup halaman notifikasi
-        return false; // Mencegah navigasi default
+        widget.onBackToHome(); // Kembali ke Home
+        Navigator.pop(context); // Tutup halaman Notifikasi
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false, // Menghilangkan ikon back
           title: const Text('Notifikasi'),
           backgroundColor: const Color.fromARGB(255, 6, 90, 151),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              widget.onBackToHome(); // Kembali ke halaman Home
-              Navigator.pop(context); // Tutup halaman notifikasi
-            },
-          ),
         ),
         body: Column(
           children: [
@@ -73,7 +78,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        isLatestSelected = true; // Set "Terbaru" sebagai aktif
+                        isLatestSelected = true;
                       });
                     },
                     child: Container(
@@ -100,7 +105,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        isLatestSelected = false; // Set "Semua" sebagai aktif
+                        isLatestSelected = false;
                       });
                     },
                     child: Container(
@@ -139,7 +144,8 @@ class _NotificationPageState extends State<NotificationPage> {
                     ),
                     const NotificationCard(
                       title: 'Pimpinan xxxxxxx',
-                      message: 'Merekomendasikan Anda untuk mengikuti pelatihan',
+                      message:
+                          'Merekomendasikan Anda untuk mengikuti pelatihan',
                     ),
                   ] else ...[
                     const NotificationCard(
@@ -169,21 +175,21 @@ class _NotificationPageState extends State<NotificationPage> {
           showUnselectedLabels: true,
           items: const [
             BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '', // Home
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.insert_drive_file),
-            label: '', // Pendataan
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: '', // Notifikasi
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '', // Profil
-          ),
+              icon: Icon(Icons.home),
+              label: '', // Home
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.insert_drive_file),
+              label: '', // Pendataan
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications),
+              label: '', // Notifikasi
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: '', // Profil
+            ),
           ],
           onTap: _onItemTapped,
         ),
@@ -216,12 +222,12 @@ class NotificationCard extends StatelessWidget {
               height: 40,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white, // Background putih untuk ikon
+                color: Colors.white,
               ),
               child: const Icon(
-                Icons.person, // Ikon profil
+                Icons.person,
                 size: 30,
-                color: Color.fromARGB(255, 6, 90, 151), // Warna biru utama
+                color: Color.fromARGB(255, 6, 90, 151),
               ),
             ),
             const SizedBox(width: 10),
@@ -237,8 +243,7 @@ class NotificationCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     message,
-                    style:
-                        const TextStyle(fontSize: 14, color: Colors.black87),
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
                   ),
                 ],
               ),

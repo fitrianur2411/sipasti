@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'inputpelatihanpage.dart';
 import 'inputsertifikasipage.dart';
 import 'notification_page.dart';
+import 'Profil.dart';
 
 class PendataanPage extends StatefulWidget {
   final VoidCallback onBackToHome;
@@ -21,9 +22,9 @@ class _PendataanPageState extends State<PendataanPage> {
     });
 
     if (index == 0) {
-      // Navigate to Home
-      widget.onBackToHome();
-      Navigator.pop(context);
+      // Navigate to Home Page (trigger onBackToHome)
+      widget.onBackToHome(); // This should trigger the navigation to the HomePage.
+      Navigator.pop(context); // Close current page and return to the previous screen (HomePage)
     } else if (index == 1) {
       // Stay on the current Pendataan page
     } else if (index == 2) {
@@ -37,11 +38,11 @@ class _PendataanPageState extends State<PendataanPage> {
         ),
       );
     } else if (index == 3) {
-      // Navigate to Profile (not implemented yet)
+      // Navigate to Profil page instead of ProfilePage
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Placeholder(), // Placeholder for Profile page
+          builder: (context) => Profil(), // Updated to navigate to Profil page
         ),
       );
     }
@@ -51,6 +52,7 @@ class _PendataanPageState extends State<PendataanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Pendataan',
           style: TextStyle(
@@ -59,38 +61,49 @@ class _PendataanPageState extends State<PendataanPage> {
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 6, 90, 151),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            widget.onBackToHome(); // Call the callback to go back to Home
-            Navigator.pop(context);
-          },
-        ),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Button for Pelatihan
-              buildMenuButton(context, 'Pelatihan', () {
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start, // Align buttons to the top
+          children: [
+            // Button for Pelatihan
+            buildMenuButton(
+              context,
+              'Pelatihan',
+              Icons.school, // Icon for Pelatihan
+              () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => inputpelatihanpage()),
                 );
-              }),
-              const SizedBox(width: 20),
-              // Button for Sertifikasi
-              buildMenuButton(context, 'Sertifikasi', () {
+              },
+            ),
+            const SizedBox(height: 20),
+            // Button for Sertifikasi
+            buildMenuButton(
+              context,
+              'Sertifikasi',
+              Icons.card_membership, // Icon for Sertifikasi
+              () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => inputsertifikasipage()),
+                  MaterialPageRoute(builder: (context) => inputsertifikasipage()),
                 );
-              }),
-            ],
-          ),
+              },
+            ),
+            const SizedBox(height: 20),
+            // Button for Riwayat
+            buildMenuButton(
+              context,
+              'Riwayat',
+              Icons.history, 
+              () {
+                // Navigate to Riwayat Page (implement this page if needed)
+              },
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -120,10 +133,13 @@ class _PendataanPageState extends State<PendataanPage> {
   }
 
   Widget buildMenuButton(
-      BuildContext context, String title, VoidCallback onPressed) {
+    BuildContext context,
+    String title,
+    IconData icon, // Parameter for the icon
+    VoidCallback onPressed,
+  ) {
     return Container(
-      width: 138,
-      height: 140,
+      height: 60, // Height of the button
       decoration: BoxDecoration(
         color: const Color(0xFFBFC9D6),
         borderRadius: BorderRadius.circular(10),
@@ -145,16 +161,24 @@ class _PendataanPageState extends State<PendataanPage> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        child: Center(
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 18, 78, 120),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Icon(
+                icon,
+                color: const Color.fromARGB(255, 18, 78, 120), // Icon color
+              ),
             ),
-          ),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 18, 78, 120),
+              ),
+            ),
+          ],
         ),
       ),
     );

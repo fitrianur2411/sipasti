@@ -24,6 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool isEditProfileSelected = true;
   File? _profileImage;
+  int _selectedIndex = 3; // Default to Profile page
 
   // Function to pick an image from gallery
   Future<void> _pickImage() async {
@@ -80,7 +81,6 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            widget.onBackToHome();
             Navigator.pop(context);
           },
         ),

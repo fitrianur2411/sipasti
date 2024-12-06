@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sipasti/Pimpinan/SertifikasiListPage.dart';
 import 'PelatihanListPage.dart';
-import 'SertifikasiListPage.dart';
 import 'PendataanPage.dart';
-import 'ProfilePage.dart';
 import 'notification_page.dart';
-import 'rekomendasidetalpage.dart';
+import 'Profil.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -52,17 +50,10 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else if (index == 3) {
+      // Jika ikon profil ditekan, langsung navigasi ke Profil
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => ProfilePage(
-            onBackToHome: () {
-              setState(() {
-                _selectedIndex = 0; // Kembali ke Home
-              });
-            },
-          ),
-        ),
+        MaterialPageRoute(builder: (context) => Profil()),
       );
     }
   }
@@ -71,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Mencegah ikon back muncul
         title: Row(
           children: [
             Image.asset('assets/logo_JTIpolinema.png', height: 40),
@@ -100,21 +92,21 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontSize: 14, color: Color(0xFF4D4D4D)),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Rekomendasi Pelatihan & Sertifikasi',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 18, 78, 120),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  buildRecommendationCard(context),
 
-                  // Pelatihan Section
+                  // Statistik bagian atas (vertikal)
+                  Column(
+                    children: [
+                      buildStatisticCard('Total Sertifikasi', '50',
+                          Icons.workspace_premium), // Ikon sertifikasi
+                      const SizedBox(height: 10),
+                      buildStatisticCard('Total Pelatihan', '50',
+                          Icons.article), // Ikon pelatihan
+                    ],
+                  ),
+
                   const SizedBox(height: 20),
                   const Text(
-                    'Pelatihan',
+                    'Informasi Pelatihan',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -164,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                   // Sertifikasi Section
                   const SizedBox(height: 20),
                   const Text(
-                    'Sertifikasi',
+                    'Informasi Sertifikasi',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -243,56 +235,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Function to build recommendation card
-  Card buildRecommendationCard(BuildContext context) {
+  Widget buildStatisticCard(String title, String value, IconData icon) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       elevation: 5,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset('assets/Rekomendasi.png',
-                height: 100, width: 100, fit: BoxFit.cover),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Program Non-Degree Peningkatan Kompetensi Dosen Vokasi 2024',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 18, 78, 120),
                   ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    'Program Non-Degree ini mendukung dosen vokasi untuk meningkatkan kompetensi dengan pengalaman global.',
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 10),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 18, 78, 120),
                   ),
-                  const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const Rekomendasidetailpage()),
-                        );
-                      },
-                      child: const Text(
-                        'Lihat selengkapnya',
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
-                      ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  height: 8,
+                  width: 150, // Fixed width for progress bar
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 6, 90, 151),
+                        Color(0xFFE3E9F2),
+                      ],
+                      stops: [0.5, 0.5],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            Icon(
+              icon,
+              size: 30,
+              color: const Color.fromARGB(255, 6, 90, 151),
             ),
           ],
         ),
@@ -300,7 +293,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Training Card Widget
   Card buildTrainingCard({
     required String title,
     required String subtitle,
@@ -331,7 +323,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Certification Card Widget
   Card buildCertificationCard({
     required String title,
     required String subtitle,

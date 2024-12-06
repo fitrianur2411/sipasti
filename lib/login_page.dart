@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart'; // Import HomePage untuk Dosen
+import 'Dosen/home_page.dart'; // Import HomePage untuk Dosen
 import 'Pimpinan/homepagepimpinan.dart'; // Import HomePagePimpinan untuk Pimpinan
 
 class LoginPage extends StatefulWidget {
@@ -16,8 +16,8 @@ class _LoginPageState extends State<LoginPage> {
   String _errorMessage = '';
   bool _isLoading = false;
 
-  // Variabel untuk tipe pengguna
-  String _userRole = 'Dosen'; // Defaultnya adalah "Dosen"
+  
+  String _userRole = ''; // Defaultnya adalah "Dosen"
 
   void _login() async {
     setState(() {

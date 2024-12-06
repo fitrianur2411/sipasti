@@ -85,7 +85,7 @@ class _InputPelatihanPageState extends State<inputpelatihanpage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Upload Pelatihan',
+              'Pelatihan',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
