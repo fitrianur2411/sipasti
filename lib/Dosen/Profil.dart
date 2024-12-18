@@ -1,57 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:sipasti/landing_page.dart';
-import 'EditProfilePage.dart'; // Import your EditProfilePage
-import 'Home_Page.dart'; // Import HomePage
-import 'PendataanPage.dart';
-import 'Notification_Page.dart';
+import 'EditProfilePage.dart';
+import 'Home_Page.dart';
+import 'PelatihanListPage.dart';
+import 'SertifikasiListPage.dart';
 
 class Profil extends StatefulWidget {
+  final String username;
+
+  const Profil({Key? key, required this.username}) : super(key: key);
+
   @override
   _ProfilState createState() => _ProfilState();
 }
 
 class _ProfilState extends State<Profil> {
-  int _selectedIndex = 3; // Default to Profile page
+  int _selectedIndex = 3; // Default ke halaman Profil
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index; // Update selected index
-    });
+    if (_selectedIndex != index) {
+      setState(() {
+        _selectedIndex = index;
+      });
 
-    if (index == 0) {
-      // Navigate to HomePage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(username: 'User'),
-        ),
-      );
-    } else if (index == 1) {
-      // Navigate to PendataanPage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PendataanPage(
-            onBackToHome: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      );
-    } else if (index == 2) {
-      // Navigate to NotificationPage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NotificationPage(
-            onBackToHome: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      );
-    } else if (index == 3) {
-      // Stay on ProfilePage
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(username: widget.username),
+            ),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PelatihanListPage(username: widget.username),
+            ),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SertifikasiListPage(username: widget.username),
+            ),
+          );
+          break;
+        case 3:
+          // Tetap di halaman Profil
+          break;
+      }
     }
   }
 
@@ -76,16 +76,15 @@ class _ProfilState extends State<Profil> {
               backgroundImage: AssetImage('assets/profile.jpg'),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Dosen',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            Text(
+              widget.username,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 30),
             buildProfileButton(
               icon: Icons.person_outline,
-              label: 'Edit Profil',
+              label: 'Profil',
               onTap: () {
-                // Navigate to EditProfilePage
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -103,7 +102,6 @@ class _ProfilState extends State<Profil> {
               icon: Icons.logout,
               label: 'Logout',
               onTap: () {
-                // Navigate to LandingPage on Logout
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => LandingPage()),
@@ -116,28 +114,25 @@ class _ProfilState extends State<Profil> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 6, 90, 151),
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: '', // Home
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.insert_drive_file),
-            label: '', // Pendataan
+            icon: Icon(Icons.article),
+            label: 'Pelatihan',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: '', // Notifikasi
+            icon: Icon(Icons.workspace_premium),
+            label: 'Sertifikasi',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: '', // Profil
+            label: 'Akun',
           ),
         ],
-        onTap: _onItemTapped,
       ),
     );
   }

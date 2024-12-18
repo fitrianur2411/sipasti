@@ -12,19 +12,19 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final TextEditingController _nipController = TextEditingController(text: "199205142023052008");
-  final TextEditingController _usernameController = TextEditingController(text: "Dosen42");
-  final TextEditingController _nameController = TextEditingController(text: "Fitria Nur Sholikah, S.Tr S.I.B, M.T");
-  final TextEditingController _addressController = TextEditingController(text: "Jl. Semanggi Barat No 23B");
-  final TextEditingController _emailController = TextEditingController(text: "FitNur123@gmail.com");
-  final TextEditingController _phoneController = TextEditingController(text: "08123456789");
+  final TextEditingController _nipController = TextEditingController(text: "2241760135");
+  final TextEditingController _usernameController = TextEditingController(text: "agung");
+  final TextEditingController _nameController = TextEditingController(text: "Agung Nugroho");
+  final TextEditingController _addressController = TextEditingController(text: "Kepanjen");
+  final TextEditingController _emailController = TextEditingController(text: "Manusia@gmail.com");
+  final TextEditingController _phoneController = TextEditingController(text: "089509772288");
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool isEditProfileSelected = true;
   File? _profileImage;
-  int _selectedIndex = 3; // Default to Profile page
+  int _selectedIndex = 3;
 
   // Function to pick an image from gallery
   Future<void> _pickImage() async {
