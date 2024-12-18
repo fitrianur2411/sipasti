@@ -110,7 +110,6 @@ class _CertificationDetailPageState extends State<CertificationDetailPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
