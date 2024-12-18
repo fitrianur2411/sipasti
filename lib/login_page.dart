@@ -237,13 +237,11 @@
 //     );
 //   }
 // }
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Dosen/home_page.dart';
-import 'Pimpinan/homepagepimpinan.dart';
+import 'Dosen/home_page.dart'; // Halaman tujuan setelah login
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -258,7 +256,6 @@ class _LoginPageState extends State<LoginPage> {
   bool _isPasswordVisible = false;
   String _errorMessage = '';
   bool _isLoading = false;
-  String _userRole = '';
 
   Future<void> _login() async {
     setState(() {
@@ -266,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
       _errorMessage = '';
     });
 
-    final url = Uri.parse('https://sipasti.cloud/api/login');
+    final url = Uri.parse('https://sipasti.cloud/api/login'); // API Login URL
 
     try {
       final response = await http.post(
@@ -285,39 +282,39 @@ class _LoginPageState extends State<LoginPage> {
           final user = data['user'];
           final token = data['token'];
 
-          // Simpan user_id dan token ke SharedPreferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('user_id', user['user_id']); // user_id disimpan sebagai String
-          await prefs.setString('token', token);
+          final String userId = user['user_id'] ?? '';
+          final String userName = user['username'] ?? '';
+          final String fullName = user['user_fullname'] ?? '';
+          final String authToken = token ?? '';
 
-          // Navigasi berdasarkan peran pengguna
-          if (_userRole == 'Dosen') {
+          if (userId.isNotEmpty && authToken.isNotEmpty) {
+            // Simpan data ke SharedPreferences
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('user_id', userId);
+            await prefs.setString('token', authToken);
+            await prefs.setString('username', userName);
+            await prefs.setString('user_fullname', fullName);
+
+            // Navigasi ke halaman utama (tanpa role)
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(username: user['username']),
-              ),
-            );
-          } else if (_userRole == 'Pimpinan') {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePagePimpinan(username: user['username']),
+                builder: (context) => HomePage(username: userName),
               ),
             );
           } else {
             setState(() {
-              _errorMessage = 'Silakan pilih peran user terlebih dahulu.';
+              _errorMessage = 'Data tidak lengkap dari server.';
             });
           }
         } else {
           setState(() {
-            _errorMessage = 'Login gagal. Periksa kredensial Anda.';
+            _errorMessage = data['message'] ?? 'Login gagal. Periksa kredensial Anda.';
           });
         }
       } else {
         setState(() {
-          _errorMessage = 'Server Error. Coba lagi nanti.';
+          _errorMessage = 'Server Error (${response.statusCode}). Coba lagi nanti.';
         });
       }
     } catch (e) {
@@ -388,41 +385,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Expanded(
-                              child: RadioListTile<String>(
-                                title: Text(
-                                  'Dosen',
-                                  style: TextStyle(fontSize: 15), 
-                                ),
-                                value: 'Dosen',
-                                groupValue: _userRole,
-                                onChanged: (value) {
-                                  setState(() => _userRole = value!);
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: RadioListTile<String>(
-                                title: Text(
-                                  'Pimpinan',
-                                  style: TextStyle(fontSize: 14), 
-                                ),
-                                value: 'Pimpinan',
-                                groupValue: _userRole,
-                                onChanged: (value) {
-                                  setState(() => _userRole = value!);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
                         TextField(
                           controller: _usernameController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Username',
                             border: OutlineInputBorder(),
                           ),
@@ -433,7 +398,7 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible
