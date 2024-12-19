@@ -258,6 +258,15 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
   Future<void> _login() async {
+    // Validasi Input
+    if (_usernameController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
+      setState(() {
+        _errorMessage = 'Username dan Password harus diisi';
+      });
+      return; // Keluar dari fungsi jika input kosong
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
@@ -288,14 +297,12 @@ class _LoginPageState extends State<LoginPage> {
           final String authToken = token ?? '';
 
           if (userId.isNotEmpty && authToken.isNotEmpty) {
-            // Simpan data ke SharedPreferences
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('user_id', userId);
             await prefs.setString('token', authToken);
             await prefs.setString('username', userName);
             await prefs.setString('user_fullname', fullName);
 
-            // Navigasi ke halaman utama (tanpa role)
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -314,7 +321,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       } else {
         setState(() {
-          _errorMessage = 'Server Error (${response.statusCode}). Coba lagi nanti.';
+          _errorMessage = 'Username atau Password Anda Salah';
         });
       }
     } catch (e) {
@@ -340,11 +347,12 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Logo
                 Image.asset(
                   'assets/logo_JTIpolinema.png',
                   height: 100,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 const Text(
                   'SIPaSTI',
                   style: TextStyle(
@@ -353,19 +361,19 @@ class _LoginPageState extends State<LoginPage> {
                     color: Color.fromARGB(255, 75, 93, 104),
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
+
+                // Login Form Container
                 Container(
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: Border.all(
-                      color: const Color.fromARGB(255, 9, 85, 146),
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 3,
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
                         blurRadius: 5,
                         offset: const Offset(0, 3),
                       ),
@@ -376,34 +384,84 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Title
                         const Text(
                           'LOGIN',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Color.fromARGB(255, 75, 93, 104),
                           ),
                         ),
                         const SizedBox(height: 20),
+
+                       // Username Field
+                        const Text(
+                          'Username',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: _usernameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Username',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            hintText: 'Masukkan Username',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade400,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: Colors.blue,
+                                width: 2.0,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
+
+                        // Password Field
+                        const Text(
+                          'Password',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
-                            labelText: 'Password',
-                            border: const OutlineInputBorder(),
+                            hintText: 'Masukkan Password',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade400,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: Colors.blue,
+                                width: 2.0,
+                              ),
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible
                                     ? Icons.visibility
                                     : Icons.visibility_off,
+                                color: Colors.grey,
                               ),
                               onPressed: () {
                                 setState(() {
@@ -413,21 +471,25 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 20),
+
+                        // Error Message
                         if (_errorMessage.isNotEmpty)
                           Padding(
-                            padding: const EdgeInsets.only(top: 10),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: Text(
                               _errorMessage,
                               style: const TextStyle(color: Colors.red),
                             ),
                           ),
-                        const SizedBox(height: 20),
+
+                        // Login Button
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: _isLoading ? null : _login,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue.shade700,
+                              backgroundColor: const Color(0xFF0B5ED7),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -442,7 +504,7 @@ class _LoginPageState extends State<LoginPage> {
                                     'Login',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
