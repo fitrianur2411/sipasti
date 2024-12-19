@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -36,7 +35,6 @@ class _CertificationDetailPageState extends State<CertificationDetailPage> {
             'https://sipasti.cloud/api/certification/show/${widget.certificationId}'),
       );
 
-      print('Fetch Certification Detail: ${response.statusCode}');
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = json.decode(response.body);
 
@@ -50,44 +48,27 @@ class _CertificationDetailPageState extends State<CertificationDetailPage> {
         setState(() {
           isLoading = false;
         });
-        print('Error: ${response.body}');
       }
     } catch (e) {
       setState(() {
         isLoading = false;
       });
-      print('Exception: $e');
-    }
-  }
-
-  // Fungsi untuk membuka URL di browser
-  Future<void> _launchUrl(String url) async {
-    final Uri fileUrl = Uri.parse(url);
-
-    if (await canLaunchUrl(fileUrl)) {
-      await launchUrl(fileUrl, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat membuka file sertifikat')),
-      );
     }
   }
 
   // Fetch file PDF sertifikasi dan tampilkan dalam preview PDF
-  Future<void> fetchCertificationFile(String certification_Id) async {
+  Future<void> fetchCertificationFile(String certificationId) async {
     try {
-      final url = 'https://sipasti.cloud/api/certification/file/$certification_Id';
-      print('Fetching PDF from: $url');
+      final url =
+          'https://sipasti.cloud/api/certification/file/$certificationId';
 
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final bytes = response.bodyBytes;
         final dir = await getApplicationDocumentsDirectory();
-        final file = File('${dir.path}/certificate_$certification_Id.pdf');
+        final file = File('${dir.path}/certificate_$certificationId.pdf');
         await file.writeAsBytes(bytes);
-
-        print('File tersimpan di: ${file.path}');
 
         // Navigasi ke halaman preview PDF
         Navigator.push(
@@ -97,13 +78,11 @@ class _CertificationDetailPageState extends State<CertificationDetailPage> {
           ),
         );
       } else {
-        print('Gagal mengambil file sertifikat. Status: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal mengakses file sertifikat')),
         );
       }
     } catch (e) {
-      print('Error fetching PDF: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Terjadi kesalahan saat memuat file PDF')),
       );
@@ -127,98 +106,89 @@ class _CertificationDetailPageState extends State<CertificationDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Header Sertifikasi
-                    Text(
-                      certificationDetail['certification_name'] ??
-                          'Tidak Ada Nama',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 22),
+                   Center( // Membuat judul di tengah
+                      child: Text(
+                        certificationDetail['certification_name'] ?? 'Tidak Ada Nama',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          color: Color.fromARGB(255, 22, 104, 171), 
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                        'Nomor Sertifikasi: ${certificationDetail['certification_number'] ?? '-'}'),
-                    Text(
-                        'Vendor: ${certificationDetail['certification_vendor_name'] ?? '-'}'),
-                    Text(
-                        'Level: ${certificationDetail['certification_level'] ?? '-'}'),
-                    Text(
-                        'Jenis: ${certificationDetail['certification_type'] ?? '-'}'),
-                    Text(
-                        'Tanggal Mulai: ${certificationDetail['certification_date_start'] ?? '-'}'),
-                    Text(
-                        'Tanggal Berakhir: ${certificationDetail['certification_date_expired'] ?? '-'}'),
                     const SizedBox(height: 20),
 
-                    // Interests Section
-                    const Text(
-                      'Bidang Minat:',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    buildSectionCard(
+                      title: 'Informasi Sertifikasi',
+                      children: [
+                        buildInfoRow('Nomor Sertifikasi',
+                            certificationDetail['certification_number'] ?? '-'),
+                        buildInfoRow('Vendor',
+                            certificationDetail['certification_vendor_name'] ??
+                                '-'),
+                        buildInfoRow('Level',
+                            certificationDetail['certification_level'] ?? '-'),
+                        buildInfoRow('Jenis',
+                            certificationDetail['certification_type'] ?? '-'),
+                        buildInfoRow('Tanggal Mulai',
+                            certificationDetail['certification_date_start'] ??
+                                '-'),
+                        buildInfoRow(
+                            'Tanggal Berakhir',
+                            certificationDetail['certification_date_expired'] ??
+                                '-'),
+                      ],
                     ),
-                    const SizedBox(height: 5),
-                    interests.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: interests.length,
-                            itemBuilder: (context, index) {
-                              return Text(
-                                  '- ${interests[index]['interest_name']}');
-                            },
-                          )
-                        : const Text('Tidak ada bidang minat.'),
 
                     const SizedBox(height: 20),
 
-                    // Courses Section
-                    const Text(
-                      'Mata Kuliah:',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    buildSectionCard(
+                      title: 'Bidang Minat',
+                      children: interests.isNotEmpty
+                          ? interests
+                              .map((interest) => ListTile(
+                                    leading: const Icon(Icons.star,
+                                        color: Color.fromARGB(255, 218, 196, 7)),
+                                    title: Text(interest['interest_name'] ?? '-'),
+                                  ))
+                              .toList()
+                          : [const Text('Tidak ada data bidang minat.')],
                     ),
-                    const SizedBox(height: 5),
-                    courses.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: courses.length,
-                            itemBuilder: (context, index) {
-                              return Text('- ${courses[index]['course_name']}');
-                            },
-                          )
-                        : const Text('Tidak ada daftar kursus.'),
+
+                    const SizedBox(height: 20),
+
+                    buildSectionCard(
+                      title: 'Mata Kuliah',
+                      children: courses.isNotEmpty
+                          ? courses
+                              .map((course) => ListTile(
+                                    leading: const Icon(Icons.book,
+                                        color: Color.fromARGB(255, 12, 85, 163)),
+                                    title: Text(course['course_name'] ?? '-'),
+                                  ))
+                              .toList()
+                          : [const Text('Tidak ada data mata kuliah.')],
+                    ),
 
                     const SizedBox(height: 20),
 
                     // Sertifikat File Link
                     if (certificationDetail['certification_file'] != null)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      buildSectionCard(
+                        title: 'File Sertifikat',
                         children: [
-                          const Text(
-                            'File Sertifikat:',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          const SizedBox(height: 5),
-                          Row(
-                            children: [
-                              TextButton(
-                                onPressed: () => _launchUrl(
-                                    certificationDetail['certification_file']),
-                                child: const Text(
-                                  'Buka di Browser',
-                                  style: TextStyle(color: Colors.blue),
-                                ),
+                          Center(
+                            child: TextButton(
+                              onPressed: () => fetchCertificationFile(
+                                  widget.certificationId),
+                              child: const Text(
+                                'Lihat Sertifikat',
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              TextButton(
-                                onPressed: () => fetchCertificationFile(
-                                    widget.certificationId),
-                                child: const Text(
-                                  'Preview PDF',
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -226,6 +196,56 @@ class _CertificationDetailPageState extends State<CertificationDetailPage> {
                 ),
               ),
             ),
+    );
+  }
+
+  // Widget untuk membangun card seksi
+ Widget buildSectionCard(
+    {required String title, required List<Widget> children}) {
+  return Card(
+    elevation: 3,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            textAlign: TextAlign.start, // Menyesuaikan posisi teks ke awal
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Color.fromARGB(255, 22, 104, 171)), 
+          ),
+          const Divider(),
+          ...children,
+        ],
+      ),
+    ),
+  );
+}
+
+  // Widget untuk membuat baris informasi
+  Widget buildInfoRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$title: ',
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black54),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -239,14 +259,14 @@ class PdfPreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Preview PDF")),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text("Preview File"),
+        backgroundColor: const Color.fromARGB(255, 18, 62, 138),
+      ),
       body: PDFView(
         filePath: filePath,
       ),
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e0c82417be6691291cfd7d69a9e6e627a7463253

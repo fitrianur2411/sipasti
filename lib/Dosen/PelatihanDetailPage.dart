@@ -59,100 +59,93 @@ class _PelatihanDetailPageState extends State<PelatihanDetailPage> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Detail Pelatihan'),
-        backgroundColor: const Color.fromARGB(255, 14, 91, 155),
+        backgroundColor: const Color.fromARGB(255, 18, 62, 138),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage.isNotEmpty
               ? Center(child: Text(_errorMessage))
               : Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(16.0),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Judul Pelatihan
-                        Text(
-                          _trainingDetail['training_name'] ?? 'Nama Pelatihan',
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
+                        // Header Pelatihan
+                        Center(
+                          child: Text(
+                            _trainingDetail['training_name'] ?? 'Nama Pelatihan',
+                            style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          color: Color.fromARGB(255, 22, 104, 171), 
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
 
-                        // Informasi Umum Pelatihan
-                        buildInfoRow('ID Pelatihan',
-                            _trainingDetail['training_id'] ?? '-'),
-                        buildInfoRow('Tahun Periode',
-                            _trainingDetail['period_year']?.toString() ?? '-'),
-                        buildInfoRow(
-                            'Tanggal Pelaksanaan',
-                            _trainingDetail['training_date'] ??
-                                '-'), // Format tanggal bisa diatur
-                        buildInfoRow(
-                            'Durasi (Jam)',
-                            _trainingDetail['training_hours']?.toString() ??
-                                '-'),
-                        buildInfoRow('Lokasi',
-                            _trainingDetail['training_location'] ?? '-'),
-                        buildInfoRow('Biaya',
-                            'Rp. ${_trainingDetail['training_cost'] ?? 0}'),
-                        buildInfoRow(
-                            'Kuota Peserta',
-                            _trainingDetail['training_quota']?.toString() ??
-                                '-'),
-                        buildInfoRow('Vendor',
-                            _trainingDetail['training_vendor_name'] ?? '-'),
-                        buildInfoRow('Level',
-                            _trainingDetail['training_level'] ?? '-'),
-
-                        const Divider(height: 30),
-
-                        // Daftar Minat Pelatihan
-                        const Text(
-                          'Bidang Minat:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                        // Informasi Umum
+                        buildSectionCard(
+                          title: 'Informasi Pelatihan',
+                          children: [
+                            buildInfoRow('ID Pelatihan',
+                                _trainingDetail['training_id'] ?? '-'),
+                            buildInfoRow('Tahun Periode',
+                                _trainingDetail['period_year']?.toString() ??
+                                    '-'),
+                            buildInfoRow('Tanggal Pelaksanaan',
+                                _trainingDetail['training_date'] ?? '-'),
+                            buildInfoRow('Durasi (Jam)',
+                                _trainingDetail['training_hours']?.toString() ??
+                                    '-'),
+                            buildInfoRow('Lokasi',
+                                _trainingDetail['training_location'] ?? '-'),
+                            buildInfoRow('Biaya',
+                                'Rp. ${_trainingDetail['training_cost'] ?? 0}'),
+                            buildInfoRow('Kuota Peserta',
+                                _trainingDetail['training_quota']?.toString() ??
+                                    '-'),
+                            buildInfoRow('Vendor',
+                                _trainingDetail['training_vendor_name'] ?? '-'),
+                            buildInfoRow('Level',
+                                _trainingDetail['training_level'] ?? '-'),
+                          ],
                         ),
-                        _interests.isNotEmpty
-                            ? ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _interests.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    leading: const Icon(Icons.star,
-                                        color: Colors.blueAccent),
-                                    title: Text(
-                                        _interests[index]['interest_name'] ??
-                                            '-'),
-                                  );
-                                },
-                              )
-                            : const Text('Tidak ada data bidang minat.'),
 
-                        const Divider(height: 30),
+                        const SizedBox(height: 20),
 
-                        // Daftar Kursus
-                        const Text(
-                          'Mata Kuliah:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                        // Bidang Minat
+                        buildSectionCard(
+                          title: 'Bidang Minat',
+                          children: _interests.isNotEmpty
+                              ? _interests
+                                  .map((interest) => ListTile(
+                                        leading: const Icon(Icons.star,
+                                            color: Color.fromARGB(255, 218, 196, 7)),
+                                        title:
+                                            Text(interest['interest_name'] ?? '-'),
+                                      ))
+                                  .toList()
+                              : [const Text('Tidak ada data bidang minat.')],
                         ),
-                        _courses.isNotEmpty
-                            ? ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _courses.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    leading: const Icon(Icons.book,
-                                        color: Colors.green),
-                                    title: Text(
-                                        _courses[index]['course_name'] ?? '-'),
-                                  );
-                                },
-                              )
-                            : const Text('Tidak ada data mata kuliah.'),
+
+                        const SizedBox(height: 20),
+
+                        // Mata Kuliah
+                        buildSectionCard(
+                          title: 'Mata Kuliah',
+                          children: _courses.isNotEmpty
+                              ? _courses
+                                  .map((course) => ListTile(
+                                        leading: const Icon(Icons.book,
+                                            color: Color.fromARGB(255, 12, 85, 163)),
+                                        title:
+                                            Text(course['course_name'] ?? '-'),
+                                      ))
+                                  .toList()
+                              : [const Text('Tidak ada data mata kuliah.')],
+                        ),
                       ],
                     ),
                   ),
@@ -160,6 +153,34 @@ class _PelatihanDetailPageState extends State<PelatihanDetailPage> {
     );
   }
 
+  // Widget untuk membangun Card seksi
+  Widget buildSectionCard(
+    {required String title, required List<Widget> children}) {
+  return Card(
+    elevation: 3,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            textAlign: TextAlign.start, // Menyesuaikan posisi teks ke awal
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Color.fromARGB(255, 22, 104, 171)),
+          ),
+          const Divider(),
+          ...children,
+        ],
+      ),
+    ),
+  );
+}
+
+  // Widget untuk membuat baris informasi
   Widget buildInfoRow(String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -181,8 +202,4 @@ class _PelatihanDetailPageState extends State<PelatihanDetailPage> {
       ),
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e0c82417be6691291cfd7d69a9e6e627a7463253
